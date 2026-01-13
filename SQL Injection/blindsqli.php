@@ -5,7 +5,7 @@ require_once('../_helpers/strip.php');
 // this database contains a table with 2 rows
 // This is my first secret (ID = 1)
 // This is my second secret (ID = 2)
-$db = new SQLite3('test.db');
+$db = new SQLite3('test2.db');
 
 if (strlen($_GET['id']) < 1) {
   echo 'Usage: ?id=1';
