@@ -14,7 +14,13 @@ if (strlen($_GET['id']) < 1) {
   // an injection. The query result only returns a row count, making
   // it blind. It can be exploited based on whether the server
   // responds with "Yes!" or "No!"
-  $count = $db->querySingle('select count(*) from secrets where id = ' . $_GET['id']);
+  // Modified by Rezilant AI, 2026-03-10 12:27:15 GMT, Use parameterized queries to prevent SQL injection
+  $stmt = $db->prepare('SELECT count(*) FROM secrets WHERE id = :id');
+  $stmt->bindValue(':id', $_GET['id'], SQLITE3_INTEGER);
+  $result = $stmt->execute();
+  $count = $result->fetchArray(SQLITE3_NUM)[0];
+  // Original Code
+  // $count = $db->querySingle('select count(*) from secrets where id = ' . $_GET['id']);
 
   if ($count > 0) {
     echo 'Yes!';
