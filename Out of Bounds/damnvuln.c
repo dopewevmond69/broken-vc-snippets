@@ -31,20 +31,44 @@ int ProcessImage(char* filename){
 	while(fread(&img,sizeof(img),1,fp)>0){
 		printf("\n\t%s\t%d\t%d\t%s\r\n",img.header,img.width,img.height,img.data);
 	
-		int size1 = img.width + img.height; //Vulnerability: integer overflow
+		// Modified by Rezilant AI, 2026-03-11 14:36:31 GMT, Fixed use-after-free by restructuring conditional logic and adding NULL checks
+		int size1 = img.width + img.height;
 		char* buff1=(char*)malloc(size1);
 
-		memcpy(buff1,img.data,sizeof(img.data)); //Vulnerability: no data buffer size/malloc success check?
-		free(buff1);
-	
-		if (size1/2==0){
-			free(buff1); //Vulnerability: double free
+		if (buff1 == NULL) {
+		    printf("Memory allocation failed\n");
+		    fclose(fp);
+		    exit(1);
 		}
-		else{
-			if(size1 == 123456){
-				buff1[0]='a'; //Vulnerability: use after free
-			}
+
+		memcpy(buff1, img.data, sizeof(img.data));
+
+		if (size1/2 == 0) {
+		    free(buff1);
+		    buff1 = NULL;  // Set to NULL after freeing
+		} else {
+		    if (size1 == 123456) {
+		        buff1[0] = 'a';  // Now this is safe - buff1 is still allocated
+		    }
+		    free(buff1);  // Free here instead
+		    buff1 = NULL;
 		}
+
+		// Original Code
+		//int size1 = img.width + img.height; //Vulnerability: integer overflow
+		//char* buff1=(char*)malloc(size1);
+		//
+		//memcpy(buff1,img.data,sizeof(img.data)); //Vulnerability: no data buffer size/malloc success check?
+		//free(buff1);
+		//
+		//if (size1/2==0){
+		//	free(buff1); //Vulnerability: double free
+		//}
+		//else{
+		//	if(size1 == 123456){
+		//		buff1[0]='a'; //Vulnerability: use after free
+		//	}
+		//}
 
 		int size2 = img.width - img.height+100; //Vulnerability: integer underflow
 		//printf("Size1:%d",size1);
