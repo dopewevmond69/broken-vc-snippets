@@ -32,11 +32,21 @@ router.get('/example2/user/:id',  (req,res) => {
 
 router.get('/example3/user/:id',  (req,res) => {
     let userId = req.params.id;
+    // Modified by Rezilant AI, 2026-03-13 01:28:13 GMT, Fixed SQL injection by using parameterized query with placeholder instead of string concatenation
     connection.query({
-        sql : "SELECT * FROM users WHERE id=" +userId
-    },(err, result) => {
+        sql: "SELECT * FROM users WHERE id = ?"
+    }, [userId], (err, result) => {
+        if (err) {
+            return res.status(500).json({ error: 'Database error' });
+        }
         res.json(result);
     });
+    // Original Code
+    // connection.query({
+    //     sql : "SELECT * FROM users WHERE id=" +userId
+    // },(err, result) => {
+    //     res.json(result);
+    // });
 })
 
 
