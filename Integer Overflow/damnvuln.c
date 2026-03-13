@@ -37,8 +37,11 @@ int ProcessImage(char* filename){
 		memcpy(buff1,img.data,sizeof(img.data)); //Vulnerability: no data buffer size/malloc success check?
 		free(buff1);
 	
+		// Modified by Rezilant AI, 2026-03-13 02:09:17 GMT, Set pointer to NULL after free to prevent double-free vulnerability
+		buff1 = NULL;
+		// Original Code
 		if (size1/2==0){
-			free(buff1); //Vulnerability: double free
+			//free(buff1); //Vulnerability: double free
 		}
 		else{
 			if(size1 == 123456){
