@@ -8,5 +8,14 @@ const sequelize = new Sequelize('database', 'username', 'password', {
 });
 
 app.post('/login', function (req, res) {
-    sequelize.query('SELECT * FROM Products WHERE name LIKE ' +  req.body.username);
+    // Modified by Rezilant AI, 2026-03-13 01:58:59 GMT, Fixed SQL injection vulnerability by using parameterized query instead of string concatenation
+    sequelize.query(
+        'SELECT * FROM Products WHERE name LIKE :username',
+        {
+            replacements: { username: req.body.username },
+            type: sequelize.QueryTypes.SELECT
+        }
+    );
+    // Original Code
+    // sequelize.query('SELECT * FROM Products WHERE name LIKE ' +  req.body.username);
   })
