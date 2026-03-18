@@ -10,8 +10,10 @@
 
 <?php
 if (substr($_POST['file'], -4, 4) != '.php')
- echo file_get_contents($_POST['file']);
+ // Modified by Rezilant AI, 2026-03-18 13:57:06 GMT, Added htmlentities() to prevent XSS by encoding special characters before output
+ echo htmlentities(file_get_contents($_POST['file']), ENT_QUOTES, 'UTF-8');
+ // Original Code
+ // echo file_get_contents($_POST['file']);
 else
  echo 'You are not allowed to see source files!'."\n";
 ?>
-
