@@ -23,12 +23,23 @@ router.get('/example1/user/:id', (req,res) => {
     });
 })
 
+// Modified by Rezilant AI, 2026-03-10 12:26:26 GMT, Fixed SQL injection by using parameterized query with placeholder
 router.get('/example2/user/:id',  (req,res) => {
     let userId = req.params.id;
-    connection.query("SELECT * FROM users WHERE id=" + userId,(err, result) => {
+    connection.query("SELECT * FROM users WHERE id = ?", [userId], (err, result) => {
+        if (err) {
+            return res.status(500).json({ error: 'Database error' });
+        }
         res.json(result);
     });
 })
+// Original Code
+// router.get('/example2/user/:id',  (req,res) => {
+//     let userId = req.params.id;
+//     connection.query("SELECT * FROM users WHERE id=" + userId,(err, result) => {
+//         res.json(result);
+//     });
+// })
 
 router.get('/example3/user/:id',  (req,res) => {
     let userId = req.params.id;
