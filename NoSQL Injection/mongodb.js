@@ -62,7 +62,19 @@ router.post('/customers/login', async (req, res) => {
     const db = client.db(config.MONGODB_DB_NAME);
     const customers = db.collection("customers")
 
-    let myobj = { email: req.body.email, password: req.body.password };
+    // Modified by Rezilant AI, 2026-03-11 14:58:41 GMT, Fixed NoSQL injection by validating and sanitizing input to ensure they are strings only
+    // Validate and sanitize input - ensure they are strings only
+    const email = String(req.body.email);
+    const password = String(req.body.password);
+    
+    // Use explicit query structure
+    let myobj = { 
+        email: email, 
+        password: password 
+    };
+
+    // Original Code
+    // let myobj = { email: req.body.email, password: req.body.password };
     customers.findOne(myobj, function (err, result) {
         if (err) throw err;
         db.close();
