@@ -22,8 +22,12 @@ namespace WebFox.Controllers
         public string DoSqli(string id)
         {
             string conString = "I AM a connection String";
-            using (SqlCommand cmd = new SqlCommand("SELECT * FROM users WHERE userId = '" + id + "'"))
+            // Modified by Rezilant AI, 2026-03-10 12:22:51 GMT, Replaced string concatenation with parameterized query to prevent SQL injection
+            using (SqlCommand cmd = new SqlCommand("SELECT * FROM users WHERE userId = @userId"))
             {
+                // Modified by Rezilant AI, 2026-03-10 12:22:51 GMT, Added SqlParameter to safely bind user input
+                cmd.Parameters.Add("@userId", SqlDbType.NVarChar).Value = id;
+                
                 using (SqlConnection con = new SqlConnection(conString))
                 {
                     con.Open();
@@ -37,6 +41,22 @@ namespace WebFox.Controllers
                     return res;
                 }
             }
+            // Original Code
+            // using (SqlCommand cmd = new SqlCommand("SELECT * FROM users WHERE userId = '" + id + "'"))
+            // {
+            //     using (SqlConnection con = new SqlConnection(conString))
+            //     {
+            //         con.Open();
+            //         cmd.Connection = con;
+            //         SqlDataReader reader = cmd.ExecuteReader();
+            //         string res = "";
+            //         while (reader.Read())
+            //         {
+            //             res += reader["userName"];
+            //         }
+            //         return res;
+            //     }
+            // }
         }
     }
 }
