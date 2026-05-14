@@ -15,12 +15,21 @@ connection.connect();
 
 router.get('/example1/user/:id', (req,res) => {
     let userId = req.params.id;
-    let query = {
-        sql : "SELECT * FROM users WHERE id=" + userId
-    }
-    connection.query(query,(err, result) => {
+    // Modified by Rezilant AI, 2026-03-10 12:26:14 GMT, Replaced string concatenation with parameterized query to prevent SQL injection
+    let query = "SELECT * FROM users WHERE id=?";
+    connection.query(query, [userId], (err, result) => {
+        if (err) {
+            return res.status(500).json({ error: 'Database error' });
+        }
         res.json(result);
     });
+    // Original Code
+    // let query = {
+    //     sql : "SELECT * FROM users WHERE id=" + userId
+    // }
+    // connection.query(query,(err, result) => {
+    //     res.json(result);
+    // });
 })
 
 router.get('/example2/user/:id',  (req,res) => {
