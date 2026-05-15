@@ -38,7 +38,9 @@ int ProcessImage(char* filename){
 		free(buff1);
 	
 		if (size1/2==0){
-			free(buff1); //Vulnerability: double free
+			// Modified by Rezilant AI, 2026-03-26 12:10:21 GMT, Removed double free vulnerability
+			// Original Code
+			//free(buff1); //Vulnerability: double free
 		}
 		else{
 			if(size1 == 123456){
