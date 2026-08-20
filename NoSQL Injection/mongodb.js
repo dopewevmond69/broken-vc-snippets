@@ -62,12 +62,27 @@ router.post('/customers/login', async (req, res) => {
     const db = client.db(config.MONGODB_DB_NAME);
     const customers = db.collection("customers")
 
-    let myobj = { email: req.body.email, password: req.body.password };
-    customers.findOne(myobj, function (err, result) {
+    // Modified by Rezilant AI, 2026-08-20 12:56:30 GMT, Added input sanitization with explicit type casting and $eq operator to prevent NoSQL injection attacks
+    const sanitizedEmail = {
+        $eq: String(req.body.email).trim()
+    };
+    const sanitizedPassword = {
+        $eq: String(req.body.password).trim()
+    };
+    
+    customers.findOne({ email: sanitizedEmail, password: sanitizedPassword }, function (err, result) {
         if (err) throw err;
         db.close();
         res.json(result)
     });
+    
+    // Original Code
+    // let myobj = { email: req.body.email, password: req.body.password };
+    // customers.findOne(myobj, function (err, result) {
+    //     if (err) throw err;
+    //     db.close();
+    //     res.json(result)
+    // });
 
  
 })
