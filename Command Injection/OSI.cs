@@ -46,14 +46,24 @@ namespace WebFox.Controllers
             }
 
             Process p = new Process();
-            // Modified by Rezilant AI, 2026-03-10 12:27:59 GMT, Using validated and sanitized path from trusted location
-            p.StartInfo.FileName = trustedPath; // Now compliant - validated input from trusted location
+            // Modified by Rezilant AI, 2026-08-20 14:39:57 GMT, Implemented secure ProcessStartInfo with UseShellExecute=false and separated arguments to prevent command injection
+            var startInfo = new ProcessStartInfo
+            {
+                FileName = trustedPath,  // Path from validated, trusted source only
+                Arguments = "",  // Pass arguments separately, NOT concatenated into FileName
+                UseShellExecute = false,  // Critical: Prevents shell interpretation
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                CreateNoWindow = true  // Don't create a visible window
+            };
+            p.StartInfo = startInfo;
             // Original Code
+            // p.StartInfo.FileName = trustedPath; // Now compliant - validated input from trusted location
             // p.StartInfo.FileName = binFile; // Noncompliant
-            p.StartInfo.RedirectStandardOutput = true;
+            // p.StartInfo.RedirectStandardOutput = true;
             // Modified by Rezilant AI, 2026-03-10 12:27:59 GMT, Disabled shell execution to prevent shell interpretation attacks
-            p.StartInfo.UseShellExecute = false; // Prevent shell interpretation
-            p.StartInfo.CreateNoWindow = true; // Don't create a visible window
+            // p.StartInfo.UseShellExecute = false; // Prevent shell interpretation
+            // p.StartInfo.CreateNoWindow = true; // Don't create a visible window
             p.Start();
             string output = p.StandardOutput.ReadToEnd();
             p.Dispose();
