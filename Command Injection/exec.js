@@ -32,7 +32,15 @@ router.get('/run', (req,res) => {
 function runMe(cmd,res){
 //    return spawn(cmd);
 
-    const cmdRunning = spawn(cmd, []);
+    // Modified by Rezilant AI, 2026-08-20 14:38:31 GMT, Fixed command injection by separating command from arguments and disabling shell interpretation
+    // Parse the command properly and pass arguments as array elements
+    const args = cmd.split(' ');
+    const command = args.shift(); // Get the first element as the command
+    const cmdRunning = spawn(command, args, {
+      shell: false  // Explicitly disable shell interpretation
+    });
+    // Original Code
+    // const cmdRunning = spawn(cmd, []);
     cmdRunning.on('close', (code) => {
         res.send(`child process exited with code ${code}`);
     });
