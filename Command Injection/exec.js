@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router()
 
 const { exec, spawn }  = require('child_process');
+// Modified by Rezilant AI, 2026-08-20 14:38:06 GMT: Added execFile import to prevent command injection
+const { execFile } = require('child_process');
 
 
 router.post('/ping', (req,res) => {
@@ -15,13 +17,20 @@ router.post('/ping', (req,res) => {
 })
 
 router.post('/gzip', (req,res) => {
-    exec(
-        'gzip ' + req.query.file_path,
-        function (err, data) {
-          console.log('err: ', err)
-          console.log('data: ', data);
-          res.send('done');
+    // Modified by Rezilant AI, 2026-08-20 14:38:06 GMT: Replaced exec with execFile to prevent command injection by avoiding shell invocation and using array arguments
+    execFile('gzip', [req.query.file_path], function (err, data) {
+        console.log('err: ', err)
+        console.log('data: ', data);
+        res.send('done');
     });
+    // Original Code
+    // exec(
+    //     'gzip ' + req.query.file_path,
+    //     function (err, data) {
+    //       console.log('err: ', err)
+    //       console.log('data: ', data);
+    //       res.send('done');
+    // });
 })
 
 router.get('/run', (req,res) => {
