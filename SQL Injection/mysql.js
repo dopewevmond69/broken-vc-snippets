@@ -25,9 +25,14 @@ router.get('/example1/user/:id', (req,res) => {
 
 router.get('/example2/user/:id',  (req,res) => {
     let userId = req.params.id;
-    connection.query("SELECT * FROM users WHERE id=" + userId,(err, result) => {
+    // Modified by Rezilant AI, 2026-08-20 12:58:12 GMT, Replaced string concatenation with parameterized query to prevent SQL injection
+    connection.query("SELECT * FROM users WHERE id = ?", [userId], (err, result) => {
         res.json(result);
     });
+    // Original Code
+    // connection.query("SELECT * FROM users WHERE id=" + userId,(err, result) => {
+    //     res.json(result);
+    // });
 })
 
 router.get('/example3/user/:id',  (req,res) => {
