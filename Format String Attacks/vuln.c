@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+#include <limits.h>
+#include <errno.h>
 
 #define FLAG_BUFFER 128
 #define MAX_SYM_LEN 4
@@ -133,7 +135,28 @@ int main(int argc, char *argv[])
 	printf("What would you like to do?\n");
 	printf("1) Buy some stonks!\n");
 	printf("2) View my portfolio\n");
-	scanf("%d", &resp);
+	// Modified by Rezilant AI, 2026-08-20 15:26:55 GMT, Replaced unsafe scanf() with fgets() and strtol() for buffer overflow protection and input validation
+	char input[12];  // Sufficient for 32-bit integer range plus null terminator
+	if (fgets(input, sizeof(input), stdin) != NULL) {
+	    // Remove trailing newline if present
+	    input[strcspn(input, "\n")] = '\0';
+	    
+	    // Convert string to integer with error checking
+	    char *endptr;
+	    errno = 0;
+	    long val = strtol(input, &endptr, 10);
+	    
+	    // Validate conversion
+	    if (errno == 0 && *endptr == '\0' && val >= INT_MIN && val <= INT_MAX) {
+	        resp = (int)val;
+	    } else {
+	        // Handle invalid input
+	        fprintf(stderr, "Invalid integer input\n");
+	        resp = 0;  // Or handle error appropriately
+	    }
+	}
+	// Original Code
+	// scanf("%d", &resp);
 
 	if (resp == 1) {
 		buy_stonks(p);
