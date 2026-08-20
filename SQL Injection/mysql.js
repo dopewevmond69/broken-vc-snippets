@@ -32,11 +32,19 @@ router.get('/example2/user/:id',  (req,res) => {
 
 router.get('/example3/user/:id',  (req,res) => {
     let userId = req.params.id;
+    // Modified by Rezilant AI, 2026-08-20 12:58:45 GMT, Fixed SQL injection vulnerability by using parameterized query
     connection.query({
-        sql : "SELECT * FROM users WHERE id=" +userId
-    },(err, result) => {
+        sql: "SELECT * FROM users WHERE id = ?",
+        values: [userId]
+    }, (err, result) => {
         res.json(result);
     });
+    // Original Code
+    // connection.query({
+    //     sql : "SELECT * FROM users WHERE id=" +userId
+    // },(err, result) => {
+    //     res.json(result);
+    // });
 })
 
 
