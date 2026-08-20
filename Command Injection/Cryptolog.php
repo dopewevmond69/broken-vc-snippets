@@ -23,12 +23,18 @@ else if($opt=='add')
 }
 else if($opt=='check')
 {
-  echo cLogshares::fTestFileshare("/mnt/logsource_".$lsid."_".$sharetype);
+  // Modified by Rezilant AI, 2026-08-20 15:23:36 GMT, Added htmlentities() to prevent XSS by encoding special characters before output
+  echo htmlentities(cLogshares::fTestFileshare("/mnt/logsource_".$lsid."_".$sharetype), ENT_QUOTES, 'UTF-8');
+  // Original Code
+  // echo cLogshares::fTestFileshare("/mnt/logsource_".$lsid."_".$sharetype);
 }
 else if($opt=='mount')
 {
   cLogshares::fMountFileshareOnly($dbConn,$lsid,$sharetype);
-  echo cLogshares::fTestFileshare("/mnt/logsource_".$lsid."_".$sharetype);
+  // Modified by Rezilant AI, 2026-08-20 15:23:36 GMT, Added htmlentities() to prevent XSS by encoding special characters before output
+  echo htmlentities(cLogshares::fTestFileshare("/mnt/logsource_".$lsid."_".$sharetype), ENT_QUOTES, 'UTF-8');
+  // Original Code
+  // echo cLogshares::fTestFileshare("/mnt/logsource_".$lsid."_".$sharetype);
 }
 
 function fTestFileshare($sharefolder)
