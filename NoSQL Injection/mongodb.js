@@ -37,8 +37,14 @@ router.post('/customers/find', async (req, res) => {
     const db = client.db(config.MONGODB_DB_NAME);
     const customers = db.collection("customers")
 
-    let name = req.body.name
-    let myobj = { name: name };
+    // Modified by Rezilant AI, 2026-08-20 12:55:52 GMT, Added input sanitization to prevent NoSQL injection attacks
+    const mongoSanitize = require('mongo-sanitize');
+    const sanitizedName = mongoSanitize(req.body.name);
+    let myobj = { name: sanitizedName };
+
+    // Original Code
+    // let name = req.body.name
+    // let myobj = { name: name };
     customers.findOne(myobj, function (err, result) {
         if (err) throw err;
         db.close();
