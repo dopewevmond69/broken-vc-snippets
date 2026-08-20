@@ -1,4 +1,3 @@
-
 <?php
 
 $UploadDir = '/var/www/';
@@ -27,7 +26,10 @@ $data = fread($handle, 8192);
 if (strlen($data) == 0) {
 break;
 }
-echo($data);
+// Modified by Rezilant AI, 2026-08-20 15:25:36 GMT, Applied output encoding to prevent XSS by sanitizing user data with htmlspecialchars
+echo htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
+// Original Code
+// echo($data);
 } while (true);
 
 fclose($handle);
