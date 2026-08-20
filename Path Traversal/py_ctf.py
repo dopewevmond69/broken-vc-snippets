@@ -10,6 +10,7 @@ from flask import (
     render_template_string
 )
 from flask.ext.session import Session
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
@@ -74,8 +75,19 @@ def article():
     if page.find('flag') >= 0:
         page = 'notallowed.txt'
 
+    # Modified by Rezilant AI, 2026-08-20 14:42:04 GMT, Added secure_filename() and path validation to prevent path traversal attacks
+    safe_page = secure_filename(page)
+    base_path = '/home/golem/articles/'
+    full_path = os.path.join(base_path, safe_page)
+    
+    # Ensure the resolved path is still within the base directory
+    if not os.path.abspath(full_path).startswith(os.path.abspath(base_path)):
+        raise ValueError("Invalid file path")
+
     try:
-        template = open('/home/golem/articles/{}'.format(page)).read()
+        # Original Code
+        # template = open('/home/golem/articles/{}'.format(page)).read()
+        template = open(full_path).read()
     except Exception as e:
         template = e
 
