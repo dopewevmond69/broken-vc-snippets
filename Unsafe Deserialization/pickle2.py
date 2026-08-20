@@ -80,7 +80,13 @@ def reminder():
             flash("Message cleared, tell us when you have found more brains.")
         else:
             flash("We will remember where you find your brains.")
-        location = b64e(pickle.dumps(location))
+        # Modified by Rezilant AI, 2026-08-20 14:39:18 GMT, Replace unsafe pickle serialization with safe JSON serialization
+        import json
+        import base64
+        location_json = json.dumps(location)
+        location = base64.b64encode(location_json.encode('utf-8'))
+        # Original Code
+        # location = b64e(pickle.dumps(location))
         cookie = make_cookie(location, cookie_secret)
         response = redirect(url_for('home'))
         response.set_cookie('location', cookie)
@@ -134,7 +140,12 @@ def getlocation():
     if not safe_str_cmp(calc_digest(location, cookie_secret), digest):
         flash("Hey! This is not a valid cookie! Leave me alone.")
         return False
-    location = loads(b64d(location))
+    # Modified by Rezilant AI, 2026-08-20 14:39:18 GMT, Replace unsafe pickle deserialization with safe JSON deserialization
+    import json
+    import base64
+    location = json.loads(base64.b64decode(location).decode('utf-8'))
+    # Original Code
+    # location = loads(b64d(location))
     return location
 
 
