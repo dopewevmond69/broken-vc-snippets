@@ -10,6 +10,7 @@ from flask import (
     render_template_string
 )
 from flask.ext.session import Session
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
@@ -75,7 +76,25 @@ def article():
         page = 'notallowed.txt'
 
     try:
-        template = open('/home/golem/articles/{}'.format(page)).read()
+        # Modified by Rezilant AI, 2026-08-20 14:42:32 GMT, Fixed path traversal vulnerability by sanitizing filename and validating path
+        # Sanitize the filename to remove path traversal attempts
+        safe_page = secure_filename(page)
+        
+        # Define the allowed directory
+        ARTICLES_DIR = '/home/golem/articles'
+        
+        # Build the full path
+        full_path = os.path.join(ARTICLES_DIR, safe_page)
+        
+        # Verify the resolved path is still within the allowed directory
+        if not os.path.abspath(full_path).startswith(os.path.abspath(ARTICLES_DIR)):
+            raise ValueError("Invalid file path")
+        
+        # Now safely open the file
+        template = open(full_path).read()
+        
+        # Original Code
+        # template = open('/home/golem/articles/{}'.format(page)).read()
     except Exception as e:
         template = e
 
