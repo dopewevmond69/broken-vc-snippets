@@ -8,7 +8,10 @@ require_once('../_helpers/strip.php');
   </head>
   <body>
     <p>
-      Hi, <?= $_GET['name']; ?>
+      <!-- Modified by Rezilant AI, 2026-08-20 15:25:57 GMT, Preventing XSS by encoding user input with htmlentities -->
+      Hi, <?= htmlentities($_GET['name'], ENT_QUOTES, 'UTF-8'); ?>
+      <!-- Original Code -->
+      <!-- Hi, <?= $_GET['name']; ?> -->
     </p>
     <script>
       window.onload = function(){
