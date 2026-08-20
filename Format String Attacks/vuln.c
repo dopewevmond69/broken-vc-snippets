@@ -88,7 +88,20 @@ int buy_stonks(Portfolio *p) {
 
 	char *user_buf = malloc(300 + 1);
 	printf("What is your API token?\n");
-	scanf("%300s", user_buf);
+	// Modified by Rezilant AI, 2026-08-20 15:26:22 GMT, Replaced unsafe scanf() with fgets() to prevent buffer overflow vulnerability
+	if (fgets(user_buf, 301, stdin) != NULL) {
+		// Remove trailing newline if present
+		size_t len = strlen(user_buf);
+		if (len > 0 && user_buf[len-1] == '\n') {
+			user_buf[len-1] = '\0';
+		}
+	} else {
+		// Handle input error
+		fprintf(stderr, "Error reading input\n");
+		user_buf[0] = '\0';
+	}
+	// Original Code
+	// scanf("%300s", user_buf);
 	printf("Buying stonks with token:\n");
 	printf(user_buf);
 
